@@ -69,7 +69,9 @@ body {
   gap: 6px;
 }
 
-.tz-city {
+.tz-city,
+.tz-city:visited,
+.tz-city:active {
   font-size: clamp(13px, 6cqw, 24px);
   font-weight: 500;
   color: #d4d2cb;
@@ -77,6 +79,7 @@ body {
   overflow: hidden;
   text-overflow: ellipsis;
   flex: 1;
+  text-decoration: none;
 }
 
 .tz-offset {
@@ -150,7 +153,9 @@ body {
   text-overflow: ellipsis;
 }
 
-.breaking-news-card-title {
+.breaking-news-card-title,
+.breaking-news-card-title:visited,
+.breaking-news-card-title:active {
   color: #ff7b72;
 }
 

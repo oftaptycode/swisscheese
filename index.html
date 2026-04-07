@@ -56,7 +56,7 @@
               const dateText = formatPublishedDate(item.published);
               card.innerHTML = `
                       <div class="tz-top">
-                        <span class="tz-city news-card-title">${item.title}</span>
+                        <a href="${item.url}" target="_blank" class="tz-city news-card-title">${item.title}</a>
                       </div>
                       <div class="tz-date">${dateText}</div>
                     `;
@@ -81,7 +81,7 @@
                 const dateText = formatPublishedDate(item.published);
                 card.innerHTML = `
                         <div class="tz-top">
-                          <span class="tz-city news-card-title breaking-news-card-title">${item.title}</span>
+                          <a href="${item.url}" target="_blank" class="tz-city news-card-title breaking-news-card-title">${item.title}</a>
                         </div>
                         <div class="tz-date">${dateText}</div>
                       `;
