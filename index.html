@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>World Timezone Grid Clock</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&family=DM+Sans:wght@400;500&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div class="page">
+    <div class="header">
+      <span class="header-label">world clocks</span>
+    </div>
+    <div class="grid-wrap">
+      <div class="tz-grid" id="grid"></div>
+    </div>
+    <div class="news-wrap">
+      <h1>News</h1>
+      <div class="grid-wrap">
+        <div class="tz-list" id="news-list"></div>
+      </div>
+      <h1 class="news-title">Breaking News</h1>
+      <div class="grid-wrap">
+        <div class="tz-list" id="breaking-news-list"></div>
+      </div>
+      <script>
+        const formatPublishedDate = (dateString) => {
+          if (!dateString) return "";
+          const dateObj = new Date(dateString);
+          return dateObj.toLocaleString("en-US", {
+            weekday: "long",
+            month: "long",
+            day: "numeric",
+            hour: "numeric",
+            minute: "2-digit"
+          }).replace(' at ', ' '); // Tweak to remove the 'at' from the default formatting if present
+        };
+
+        fetch("http://localhost:8000/news")
+          .then(response => response.json())
+          .then(data => {
+            const newsList = document.getElementById("news-list");
+            data.forEach(item => {
+              const card = document.createElement("div");
+              card.className = "tz-card";
+              const dateText = formatPublishedDate(item.published);
+              card.innerHTML = `
+                      <div class="tz-top">
+                        <span class="tz-city news-card-title">${item.title}</span>
+                      </div>
+                      <div class="tz-date">${dateText}</div>
+                    `;
+              newsList.appendChild(card);
+            });
+          });
+
+        fetch("http://localhost:8000/news/breaking")
+          .then(response => response.json())
+          .then(data => {
+            const breakingNewsList = document.getElementById("breaking-news-list");
+            data.forEach(item => {
+              const card = document.createElement("div");
+              card.className = "tz-card";
+              const dateText = formatPublishedDate(item.published);
+              card.innerHTML = `
+                      <div class="tz-top">
+                        <span class="tz-city news-card-title breaking-news-card-title">${item.title}</span>
+                      </div>
+                      <div class="tz-date">${dateText}</div>
+                    `;
+              breakingNewsList.appendChild(card);
+            });
+          });
+      </script>
+    </div>
+
+    <script>
+      const zones = [
+        // { city: 'Honolulu',    tz: 'Pacific/Honolulu' },
+        // { city: 'Anchorage',   tz: 'America/Anchorage' },
+        // { city: 'Los Angeles', tz: 'America/Los_Angeles' },
+        // { city: 'Denver',      tz: 'America/Denver' },
+        // { city: 'Chicago',     tz: 'America/Chicago' },
+        { city: 'New York', tz: 'America/New_York' },
+        // { city: 'Toronto',     tz: 'America/Toronto' },
+        // { city: 'São Paulo',   tz: 'America/Sao_Paulo' },
+        // { city: 'Reykjavik',   tz: 'Atlantic/Reykjavik' },
+        { city: 'London', tz: 'Europe/London' },
+        // { city: 'Paris',       tz: 'Europe/Paris' },
+        // { city: 'Berlin',      tz: 'Europe/Berlin' },
+        // { city: 'Cairo',       tz: 'Africa/Cairo' },
+        // { city: 'Nairobi',     tz: 'Africa/Nairobi' },
+        // { city: 'Moscow',      tz: 'Europe/Moscow' },
+        // { city: 'Dubai',       tz: 'Asia/Dubai' },
+        // { city: 'Mumbai',      tz: 'Asia/Kolkata' },
+        // { city: 'Jakarta',     tz: 'Asia/Jakarta' },
+        // { city: 'Bangkok',     tz: 'Asia/Bangkok' },
+        // { city: 'Singapore',   tz: 'Asia/Singapore' },
+        // { city: 'Shanghai',    tz: 'Asia/Shanghai' },
+        { city: 'Tokyo', tz: 'Asia/Tokyo' },
+        // { city: 'Seoul',       tz: 'Asia/Seoul' },
+        { city: 'Sydney', tz: 'Australia/Sydney' },
+        // { city: 'Auckland',    tz: 'Pacific/Auckland' },
+      ];
+
+      function getOffset(tz) {
+        const now = new Date();
+        const fmt = new Intl.DateTimeFormat('en', { timeZone: tz, timeZoneName: 'shortOffset' });
+        const parts = fmt.formatToParts(now);
+        const off = parts.find(p => p.type === 'timeZoneName')?.value || '';
+        return off.replace('GMT', 'UTC');
+      }
+
+      function getParts(tz) {
+        const now = new Date();
+        const fmt = new Intl.DateTimeFormat('en-US', {
+          timeZone: tz,
+          hour: '2-digit', minute: '2-digit', second: '2-digit',
+          hour12: false, weekday: 'short', month: 'short', day: 'numeric'
+        });
+        const parts = fmt.formatToParts(now);
+        const get = t => parts.find(p => p.type === t)?.value || '';
+        let h = get('hour'), m = get('minute'), s = get('second');
+        if (h === '24') h = '00';
+        const hNum = parseInt(h, 10);
+        const isDay = hNum >= 6 && hNum < 20;
+        const dateStr = `${get('weekday')} ${get('month')} ${get('day')}`;
+        return { h, m, s, isDay, dateStr };
+      }
+
+      const grid = document.getElementById('grid');
+      const offsets = zones.map(z => getOffset(z.tz));
+
+      const continentColors = {
+        America: '255, 123, 114',
+        Europe: '126, 231, 135',
+        Asia: '210, 168, 255',
+        Australia: '121, 192, 255',
+        Africa: '255, 176, 0',
+        Pacific: '57, 197, 207',
+        Atlantic: '242, 204, 96'
+      };
+
+      zones.forEach((z, i) => {
+        const continent = z.tz.split('/')[0];
+        const rgb = continentColors[continent] || '126, 184, 247';
+        const card = document.createElement('div');
+        card.className = 'tz-card';
+        card.id = 'card-' + i;
+        card.innerHTML = `
+  <div class="tz-top">
+    <span class="tz-city">${z.city}</span>
+    <span class="tz-offset" style="--c: ${rgb}">${offsets[i]}</span>
+  <\/div>
+  <div class="tz-time" id="time-${i}"><\/div>
+  <div class="tz-date" id="date-${i}"><\/div>
+`;
+        grid.appendChild(card);
+      });
+
+      function tick() {
+        zones.forEach((z, i) => {
+          const { h, m, s, dateStr } = getParts(z.tz);
+          const timeEl = document.getElementById('time-' + i);
+          const dateEl = document.getElementById('date-' + i);
+          timeEl.innerHTML = `${h}:${m}<span class="sec">:${s}</span>`;
+          dateEl.textContent = dateStr;
+        });
+      }
+
+      tick();
+      setInterval(tick, 1000);
+    </script>
+</body>
+
+</html>
