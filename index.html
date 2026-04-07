@@ -102,9 +102,9 @@
             newsList.prepend(makeCard(item));
           });
 
-          // Rebuild breaking news each poll — drop items older than 10 minutes
-          const tenMinAgo = Date.now() - 10 * 60 * 1000;
-          const freshBreaking = breaking.filter(item => new Date(item.published).getTime() > tenMinAgo);
+          // Rebuild breaking news each poll — drop items older than 24 hours
+          const twentyFourHoursAgo = Date.now() - 24 * 60 * 60 * 1000;
+          const freshBreaking = breaking.filter(item => new Date(item.published).getTime() > twentyFourHoursAgo);
 
           breakingList.innerHTML = "";
           if (freshBreaking.length > 0) {
