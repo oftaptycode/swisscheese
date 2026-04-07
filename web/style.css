@@ -31,7 +31,7 @@ body {
 }
 
 .grid-wrap {
-  border: 1px solid #2a2a27;
+  /* border: 1px solid #2a2a27; */
   border-radius: 12px;
   overflow: hidden;
 }
@@ -40,22 +40,27 @@ body {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(165px, 1fr));
   gap: 1px;
-  background: #2a2a27;
+  /* background: #2a2a27; */
+  background: #111110;
 }
 
 .tz-list {
   display: flex;
   flex-direction: column;
   gap: 1px;
-  background: #2a2a27;
+  /* background: #2a2a27; */
+  background: #111110;
 }
 
 .tz-card {
   container-type: inline-size;
+  border: 1px solid #2a2a27;
   background: #1a1a18;
   padding: 14px 14px 12px;
   transition: background 0.2s;
+  border-radius: 12px;
   cursor: default;
+  margin-top: 5px;
 }
 
 .tz-card:hover {
@@ -116,10 +121,11 @@ body {
 }
 
 .news-wrap h1 {
-  font-size: 20px;
+  font-size: 13px;
   font-weight: 500;
-  color: #d4d2cb;
+  color: #555552;
   margin-bottom: 10px;
+  text-transform: lowercase;
 }
 
 .news-wrap ul {
@@ -136,10 +142,11 @@ body {
 
 .news-title {
   margin-top: 20px;
-  font-size: 20px;
+  font-size: 13px;
   font-weight: 500;
-  color: #d4d2cb;
+  color: #555552;
   margin-bottom: 10px;
+  text-transform: lowercase;
 }
 
 .news-card-title {
