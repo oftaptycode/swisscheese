@@ -41,7 +41,7 @@
           }).replace(' at ', ' '); // Tweak to remove the 'at' from the default formatting if present
         };
 
-        fetch("http://localhost:8000/news")
+        fetch("https://swisscheese-production.up.railway.app/news")
           .then(response => response.json())
           .then(data => {
             const newsList = document.getElementById("news-list");
@@ -59,7 +59,7 @@
             });
           });
 
-        fetch("http://localhost:8000/news/breaking")
+        fetch("https://swisscheese-production.up.railway.app/news/breaking")
           .then(response => response.json())
           .then(data => {
             const breakingNewsList = document.getElementById("breaking-news-list");
