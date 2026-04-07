@@ -7,7 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from datetime import datetime, timezone
 
-TOKEN = "%22EAAAADYJ5m3QDK%2Fzk8Ac2lPcHMqXTt0%2BkZGyHEquAVooBDxraiDnWo0Eo0BFqFGx8uR0zGeGjDo%2Fs5BA25e9wUG4mf74L5fT6J%2Bv7uvlj3WqqAIgYkyaiXJL7I3n7RtCs%2BWomGBakFsvihBwHg2IWUb%2Fje5APgxRX2UBJ1IzLEP97DiaT6nGCk9b1b1dFqOSwwaWm1IEfmq6k0uHa12QgcC49c7qxxOmuB5oVJqLx%2Fo7wGmRDsOq3sW2CBGUl4jjzOpO6pV9pXHn%2B6bubfB1SB9F04VoDUgfX6e4RGHiyCf%2Bryoi7CZ5WcVoS1NaevCGe7ZnDkGTFWkBVg%2F4XElhkKZX7tAgemLaENBwQ08HP%2BUkn4ef%2Fmji5xtXzyqq4mdPq6pOOoH6xZ8KzzMtvhk5mM%2FLVK788iS3q4YFSZB1Y3SSVbx06Fjt2mL8InIHAjcaGcLG4vIg2RsKUyh2W%2B3q%2FX9E6GYeQ3tiltWq5dB%2FXCD2QXLk3gU6vlTp8cccyPIk99EJYH8JHPMY19zl709r6sVAy%2FW0JBWNGniL5VPRJFO7TJvV%22"
+TOKEN = "%22EAAAAJeB7Sg8ttKJSHoB%2F5PQrYvJ%2B5H51pRU0Nkx57Af8e%2BzStX4nPwv%2BY3GH3MnC7LvhHxSnjj1ouffaWuldmwzgsKAXKluu0ZrbllFsV9AkavO%2BeHnBN581JbSnzY2w8NKnI5Gs8Oyquu%2FNJ2Qm9Ile7PjjRE%2FiKrEa1Y7qjzs0Q9fmZyb%2BuBNy4lMLG4hykjWXJvUL%2BFROlIqq19NycRIx9qq7SyvoYPTmZUbNnglr%2B3gv4CXUOJO6UxhC5QXL2Isp1ZVh9rc7TpUyBz4T8zCpmSBJLHts1ILR5pm0eCUZCqykln0iipRYL9yuzKoL%2BPI9lI35V%2FZZdjLKWcpp5TRrjuykCf80d%2BhYW7RNZsYVmGftDpdgoBQuShDbMhadQX%2F5ik5UohvDvKV066NflMvrOLAa55hqP7deFDZ15ZzyDBz9EEhkUs6e6ocXeS%2Bo%2FFGUqbl7xKxHcRZH1oCADClWLFscEc9CQAUtFWygnTdOXANWTNWd%2F47dQyFD3o7J24EKwUJyrRyOhJ%2BmyMEdytDSvo%3D%22&"
 URL = f"https://live.financialjuice.com/FJService.asmx/Startup?info={TOKEN}&TimeOffset=7&tabID=0&oldID=0&TickerID=0&FeedCompanyID=0&strSearch=&extraNID=0"
 
 state = {"headlines": [], "last_id": 0}
@@ -43,7 +43,7 @@ scheduler = AsyncIOScheduler()
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     await fetch_news()
-    scheduler.add_job(fetch_news, "interval", seconds=60, id="fetch_job")
+    scheduler.add_job(fetch_news, "interval", seconds=10, id="fetch_job")
     scheduler.start()
     yield
     scheduler.shutdown()

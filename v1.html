@@ -31,94 +31,62 @@
         <div class="tz-list" id="news-list"></div>
       </div>
       <script>
-        const seenIDs = new Set();
+  const seenIDs = new Set();
 
-        const formatPublishedDate = (dateString) => {
-          if (!dateString) return "";
-          const dateObj = new Date(dateString);
-          return dateObj.toLocaleString("en-US", {
-            weekday: "long",
-            month: "long",
-            day: "numeric",
-            hour: "numeric",
-            minute: "2-digit"
-          }).replace(' at ', ' ');
-        };
+  const formatPublishedDate = (dateString) => {
+    if (!dateString) return "";
+    const dateObj = new Date(dateString);
+    return dateObj.toLocaleString("en-US", {
+      weekday: "long", month: "long", day: "numeric",
+      hour: "numeric", minute: "2-digit"
+    }).replace(' at ', ' ');
+  };
 
-        function makeCard(item, extraClass = "") {
-          const card = document.createElement("div");
-          card.className = "tz-card" + (extraClass ? " " + extraClass : "");
-          if (item.level === 'active active-critical') card.classList.add("critical");
-          card.innerHTML = `
-            <div class="tz-top">
-              <a href="${item.url}" target="_blank" class="tz-city news-card-title ${extraClass}">${item.title}</a>
-            </div>
-            <div class="tz-date">${formatPublishedDate(item.published)}</div>`;
-          return card;
-        }
+  function makeCard(item, extraClass = "") {
+    const card = document.createElement("div");
+    card.className = "tz-card" + (extraClass ? " " + extraClass : "");
+    if (item.level === 'active active-critical') card.classList.add("critical");
+    card.innerHTML = `
+      <div class="tz-top">
+        <a href="${item.url}" target="_blank" class="tz-city news-card-title ${extraClass}">${item.title}</a>
+      </div>
+      <div class="tz-date">${formatPublishedDate(item.published)}</div>`;
+    return card;
+  }
 
-        function fitBreakingNews() {
-          const section = document.getElementById("breaking-news-section");
-          if (section.style.display === "none") return;
+  async function pollNews() {
+    const [newsRes, breakingRes] = await Promise.all([
+      fetch("http://localhost:8000/news"),
+      fetch("http://localhost:8000/news/breaking")
+    ]);
+    const news = await newsRes.json();
+    const breaking = await breakingRes.json();
 
-          const vh = window.innerHeight;
-          let fontSize = 24;
-          const minSize = 10;
+    const newsList = document.getElementById("news-list");
+    const breakingList = document.getElementById("breaking-news-list");
+    const breakingSection = document.getElementById("breaking-news-section");
 
-          const titles = section.querySelectorAll(".breaking-news-card-title");
-          const dates = section.querySelectorAll(".tz-date");
-          const cards = section.querySelectorAll(".tz-card");
-          const heading = section.querySelector(".news-title");
+    // Prepend new regular news items
+    news.forEach(item => {
+      if (!seenIDs.has(item.id)) {
+        seenIDs.add(item.id);
+        newsList.prepend(makeCard(item));
+      }
+    });
 
-          while (fontSize > minSize) {
-            const pad = Math.max(fontSize * 0.5, 6);
-            titles.forEach(t => t.style.fontSize = fontSize + "px");
-            dates.forEach(d => d.style.fontSize = Math.max(fontSize * 0.5, 9) + "px");
-            cards.forEach(c => c.style.padding = pad + "px " + pad + "px");
+    // Rebuild breaking news section
+    breakingList.innerHTML = "";
+    if (breaking.length > 0) {
+      breakingSection.style.display = "block";
+      breaking.slice(0, 5).forEach(item => breakingList.appendChild(makeCard(item, "flashing breaking-news-card-title")));
+    } else {
+      breakingSection.style.display = "none";
+    }
+  }
 
-            if (section.scrollHeight <= vh) break;
-            fontSize -= 1;
-          }
-        }
-
-        window.addEventListener("resize", fitBreakingNews);
-
-        async function pollNews() {
-          const [newsRes, breakingRes] = await Promise.all([
-            fetch("https://swisscheese-production.up.railway.app/news"),
-            fetch("https://swisscheese-production.up.railway.app/news/breaking")
-          ]);
-          const news = await newsRes.json();
-          const breaking = await breakingRes.json();
-
-          const newsList = document.getElementById("news-list");
-          const breakingList = document.getElementById("breaking-news-list");
-          const breakingSection = document.getElementById("breaking-news-section");
-
-          // Collect unseen items, reverse so newest ends up on top after prepend
-          const newItems = news.filter(item => !seenIDs.has(item.id));
-          newItems.reverse().forEach(item => {
-            seenIDs.add(item.id);
-            newsList.prepend(makeCard(item));
-          });
-
-          // Rebuild breaking news each poll — drop items older than 10 minutes
-          const tenMinAgo = Date.now() - 10 * 60 * 1000;
-          const freshBreaking = breaking.filter(item => new Date(item.published).getTime() > tenMinAgo);
-
-          breakingList.innerHTML = "";
-          if (freshBreaking.length > 0) {
-            breakingSection.style.display = "block";
-            freshBreaking.slice(0, 5).forEach(item => breakingList.appendChild(makeCard(item, "flashing breaking-news-card-title")));
-            fitBreakingNews();
-          } else {
-            breakingSection.style.display = "none";
-          }
-        }
-
-        pollNews();
-        setInterval(pollNews, 10000);
-      </script>
+  pollNews();
+  setInterval(pollNews, 10000);
+</script>
     </div>
 
     <script>
