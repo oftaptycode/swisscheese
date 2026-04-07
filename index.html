@@ -13,6 +13,12 @@
 
 <body>
   <div class="page">
+    <div id="breaking-news-section" style="display: none;">
+      <h1 class="news-title">Breaking News</h1>
+      <div class="grid-wrap" style="margin-bottom: 24px;">
+        <div class="tz-list" id="breaking-news-list"></div>
+      </div>
+    </div>
     <div class="header">
       <span class="header-label">world clocks</span>
     </div>
@@ -23,10 +29,6 @@
       <h1>News</h1>
       <div class="grid-wrap">
         <div class="tz-list" id="news-list"></div>
-      </div>
-      <h1 class="news-title">Breaking News</h1>
-      <div class="grid-wrap">
-        <div class="tz-list" id="breaking-news-list"></div>
       </div>
       <script>
         const formatPublishedDate = (dateString) => {
@@ -65,22 +67,29 @@
         fetch("https://swisscheese-production.up.railway.app/news/breaking")
           .then(response => response.json())
           .then(data => {
+            const breakingNewsSection = document.getElementById("breaking-news-section");
             const breakingNewsList = document.getElementById("breaking-news-list");
-            data.forEach(item => {
-              const card = document.createElement("div");
-              card.className = "tz-card";
-              if (item.level === 'active active-critical') {
-                card.classList.add("critical");
-              }
-              const dateText = formatPublishedDate(item.published);
-              card.innerHTML = `
-                      <div class="tz-top">
-                        <span class="tz-city news-card-title breaking-news-card-title">${item.title}</span>
-                      </div>
-                      <div class="tz-date">${dateText}</div>
-                    `;
-              breakingNewsList.appendChild(card);
-            });
+            
+            if (data && data.length > 0) {
+              breakingNewsSection.style.display = "block";
+              data.forEach(item => {
+                const card = document.createElement("div");
+                card.className = "tz-card flashing";
+                if (item.level === 'active active-critical') {
+                  card.classList.add("critical");
+                }
+                const dateText = formatPublishedDate(item.published);
+                card.innerHTML = `
+                        <div class="tz-top">
+                          <span class="tz-city news-card-title breaking-news-card-title">${item.title}</span>
+                        </div>
+                        <div class="tz-date">${dateText}</div>
+                      `;
+                breakingNewsList.appendChild(card);
+              });
+            } else {
+              breakingNewsSection.style.display = "none";
+            }
           });
       </script>
     </div>

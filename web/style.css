@@ -133,6 +133,10 @@ body {
 
 .news-title {
   margin-top: 20px;
+  font-size: 20px;
+  font-weight: 500;
+  color: #d4d2cb;
+  margin-bottom: 10px;
 }
 
 .news-card-title {
@@ -165,4 +169,14 @@ body {
 
 .tz-card.critical .tz-date {
   color: #ffa8a8;
+}
+
+@keyframes flash {
+  0% { background: #4a1010; }
+  50% { background: #7a1a18; }
+  100% { background: #4a1010; }
+}
+
+.flashing {
+  animation: flash 1s infinite;
 }
