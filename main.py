@@ -55,6 +55,10 @@ app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["GET"], a
 async def get_news():
     return state["headlines"]
 
+@app.get("/news/breaking")
+async def get_breaking_news():
+    return [h for h in state["headlines"] if h["breaking"]]
+
 @app.get("/status")
 async def get_status():
     job = scheduler.get_job("fetch_job")
