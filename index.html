@@ -48,6 +48,9 @@
             data.forEach(item => {
               const card = document.createElement("div");
               card.className = "tz-card";
+              if (item.level === 'active active-critical') {
+                card.classList.add("critical");
+              }
               const dateText = formatPublishedDate(item.published);
               card.innerHTML = `
                       <div class="tz-top">
@@ -66,6 +69,9 @@
             data.forEach(item => {
               const card = document.createElement("div");
               card.className = "tz-card";
+              if (item.level === 'active active-critical') {
+                card.classList.add("critical");
+              }
               const dateText = formatPublishedDate(item.published);
               card.innerHTML = `
                       <div class="tz-top">
