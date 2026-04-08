@@ -14,7 +14,7 @@ body {
 }
 
 .page {
-  max-width: 1200px;
+  max-width: 93.75vw;
   margin: 0 auto;
 }
 
@@ -146,7 +146,6 @@ body {
 }
 
 .news-title {
-  margin-top: 20px;
   font-size: 13px;
   font-weight: 500;
   color: #555552;
