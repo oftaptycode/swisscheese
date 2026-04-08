@@ -30,6 +30,11 @@ body {
   color: #555552;
 }
 
+#utc-clock {
+  font-family: 'IBM Plex Mono', monospace;
+  color: #777774;
+}
+
 .grid-wrap {
   /* border: 1px solid #2a2a27; */
   border-radius: 12px;
@@ -191,4 +196,52 @@ body {
 
 .flashing {
   animation: flash 1s infinite;
+}
+
+.tz-card {
+  position: relative;
+}
+
+.tz-card.is-open {
+  background: #f2f1ed;
+  border-color: #f2f1ed;
+  box-shadow: none;
+  transform: none;
+  transition: background 0.4s ease;
+}
+
+.tz-card.is-open .tz-city,
+.tz-card.is-open .tz-time,
+.tz-card.is-open .tz-date {
+  color: #1c1c1a;
+}
+
+.tz-card.is-open .tz-time .sec {
+  color: #a0a09a;
+}
+
+.tz-card.is-open .tz-offset {
+  color: #111110;
+  background: rgba(var(--c), 0.15);
+  padding: 2px 6px;
+  border-radius: 6px;
+  text-shadow: none;
+}
+
+.tz-card.is-open::after {
+  content: '';
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 8px;
+  height: 8px;
+  background: rgb(var(--c));
+  border-radius: 50%;
+  animation: pulse-live 1.5s infinite;
+}
+
+@keyframes pulse-live {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.5); opacity: 0.5; }
+  100% { transform: scale(1); opacity: 1; }
 }
