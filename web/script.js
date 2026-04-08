@@ -9,7 +9,7 @@ const formatPublishedDate = (dateString) => {
     day: "numeric",
     hour: "numeric",
     minute: "2-digit"
-  }).replace(' at ', ' ');
+  }).replace(' at ', ' | ');
 };
 
 function makeCard(item, extraClass = "") {
@@ -92,7 +92,7 @@ function getParts(tz) {
   const fmt = new Intl.DateTimeFormat('en-US', {
     timeZone: tz,
     hour: '2-digit', minute: '2-digit', second: '2-digit',
-    hour12: false, weekday: 'short', month: 'short', day: 'numeric'
+    hour12: false, weekday: 'long', month: 'long', day: 'numeric'
   });
   const parts = fmt.formatToParts(now);
   const get = t => parts.find(p => p.type === t)?.value || '';
@@ -101,7 +101,7 @@ function getParts(tz) {
   const hNum = parseInt(h, 10);
   const mNum = parseInt(m, 10);
   const isDay = hNum >= 6 && hNum < 20;
-  const dateStr = `${get('weekday')} ${get('month')} ${get('day')}`;
+  const dateStr = `${get('weekday')}, ${get('month')} ${get('day')}`;
   // Get numeric wall-clock day of week (0-6)
   const dayOfWeek = new Date(now.toLocaleString('en-US', { timeZone: tz })).getDay();
   return { h, m, s, hNum, mNum, dayOfWeek, isDay, dateStr };
